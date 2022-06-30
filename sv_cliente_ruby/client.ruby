@@ -5,8 +5,8 @@ connection= TCPSocket.open(hostname, port)
 print "You: "
 
 loop do                 
-    msg = gets
-    connection.puts msg 
+    msg = gets.chomp
+    connection.puts msg
     sv_msg = connection.gets          
     puts  sv_msg                   
     print "You: "

@@ -1,79 +1,83 @@
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+// import java.io.DataInputStream;
+// import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.util.Scanner;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
+import java.io.PrintWriter;
 public class server
 {
 
-	public static void main(String[] args)
-	{
-		DataInputStream din = null;
-		ServerSocket serverSocket = null;
-		DataOutputStream dout = null;
-		BufferedReader br = null;
-		try
-		{
-			serverSocket = new ServerSocket(6666);
-			System.out.println("Server is Waiting for client request... ");
+	public static void main(String[] args){
+        final ServerSocket serverSocket ;
+        final Socket clientSocket ;
+        final BufferedReader in;
+        final PrintWriter out;
+        final Scanner sc=new Scanner(System.in);
+
+        try {
+            
+            serverSocket = new ServerSocket(6666);
+            clientSocket = serverSocket.accept();
+            out = new PrintWriter(clientSocket.getOutputStream());
+            in = new BufferedReader (new InputStreamReader(clientSocket.getInputStream()));
+
+            System.out.println("Inserte Nombre");
+            String usuario= (new Scanner(System.in)).nextLine();
 
 
-			Socket socket = serverSocket.accept();
-			din = new DataInputStream(socket.getInputStream());
-			
-			OutputStream outputStream = socket.getOutputStream();
-			dout = new DataOutputStream(outputStream);
-			
-			br = new BufferedReader(new InputStreamReader(System.in));
+            Thread sender= new Thread(new Runnable() {
+                String msg;
+                @Override  
+                public void run() {
+                    while(true){
 
-			String strFromClient = "", strToClient = "";
-			while (!strFromClient.equals("stop"))
-			{
-				strFromClient = din.readUTF();
-				System.out.println("Cliente: " + strFromClient);
-				strToClient = br.readLine();
-				dout.writeUTF(strToClient);
-				dout.flush();
-			}
-		}
-		catch (Exception exe)
-		{
-			exe.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (br != null)
-				{
-					br.close();
-				}
+                        Format hora = new SimpleDateFormat("HH.mm");
+                        String horaStr = hora.format(new Date());
 
-				if (din != null)
-				{
-					din.close();
-				}
+                        msg = sc.nextLine();
+                        out.println(usuario + ": " +msg + "     ["+ horaStr +"]");  
+                        out.flush();  
+                    }
+                }
+            });
+            sender.start();
 
-				if (dout != null)
-				{
-					dout.close();
-				}
-				if (serverSocket != null)
-				{
+            Thread receive= new Thread(new Runnable() {
+                String msg ;
+                @Override
+                public void run() {
+                    try {
+                        msg = in.readLine();
+                        
+                        while(msg!=null){
+                            System.out.println(msg);
+                            msg = in.readLine();
+                        }
 
-					serverSocket.close();
-				}
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
+                        System.out.println("Cliente desconectado");
 
-	}
+                        out.close();
+                        clientSocket.close();
+                        serverSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            receive.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+
+    }
 }
+
