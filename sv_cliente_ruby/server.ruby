@@ -19,7 +19,6 @@ loop {
             puts   client_msg
             print "You: "            
             
-
         end      
       
     end

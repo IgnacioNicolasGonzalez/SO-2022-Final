@@ -2,6 +2,7 @@ var net = require('net');
 const readline = require('readline-sync')
 
 const server = net.createServer()       
+const port = 6666
 
 server.on('connection',(socket)=>{              
     socket.on('data', data =>{
@@ -26,7 +27,7 @@ server.on('connection',(socket)=>{
 
 })
 
-const port = 6666
+
 
 server.listen(port, ()=>{
     console.log("Successfull connection with port ", server.address().port)  

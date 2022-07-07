@@ -10,6 +10,7 @@ loop do
     sv_msg = connection.gets          
     puts  sv_msg                   
     print "You: "
+    
 end
 
 

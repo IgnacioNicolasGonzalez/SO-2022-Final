@@ -6,6 +6,15 @@ const options = {
 }
 const client = net.createConnection(options)
 
+function sendLine(){
+    var line = readline.question('You: ')   
+    if (line == "0"){
+        client.end()
+    }else{
+        client.write("Client: " + line +"\n") 
+    }
+}
+
 client.on('connect',()=>{                   
     console.log('Successfull connection with Server')
     sendLine()
@@ -19,11 +28,3 @@ client.on('data',(data)=>{
     sendLine()
 })
 
-function sendLine(){
-    var line = readline.question('You: ')   
-    if (line == "0"){
-        client.end()
-    }else{
-        client.write("Client: " + line +"\n") 
-    }
-}
