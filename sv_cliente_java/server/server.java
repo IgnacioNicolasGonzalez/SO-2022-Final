@@ -1,3 +1,4 @@
+package server;
 import java.io.BufferedReader;
 // import java.io.DataInputStream;
 // import java.io.DataOutputStream;
@@ -29,21 +30,13 @@ public class server
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader (new InputStreamReader(clientSocket.getInputStream()));
 
-            System.out.println("Inserte Nombre");
-            String usuario= (new Scanner(System.in)).nextLine();
-
-
             Thread sender= new Thread(new Runnable() {
                 String msg;
                 @Override  
                 public void run() {
                     while(true){
-
-                        Format hora = new SimpleDateFormat("HH.mm");
-                        String horaStr = hora.format(new Date());
-
                         msg = sc.nextLine();
-                        out.println(usuario + ": " +msg + "     ["+ horaStr +"]");  
+                        out.println("Server: " +msg );  
                         out.flush();  
                     }
                 }
